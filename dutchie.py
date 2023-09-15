@@ -23,9 +23,14 @@ async def raw_query(session, op_name, query_hash, variables):
 
     request = requests.Request("GET", "https://dutchie.com/graphql", params=params).prepare()
     logger.debug("Fetching from upstream.", query_params=params, url=request.url)
+    request.headers["Content-Type"] = "application/json"
     response = await asyncio.to_thread(session.send, request)
     logger.debug("Response", elapsed=response.elapsed.total_seconds(), size=len(response.content))
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        e.add_note(response.content.decode('utf-8'))
+        raise
     raw_data = response.json()
     if 'data' not in raw_data:
         raise ValueError(raw_data)
@@ -54,9 +59,8 @@ async def dispensary_query(session, distance):
             offerPickup = True))
 
     data = await query(session,
-                       #"ConsumerDispensaries",
-                       "DispensarySearch",
-                       "bedbd87dfd9b86bfdbf06b5173fc411db1110e92e2b4795d1342858bc579d17f",
+                       "ConsumerDispensaries",
+                       "cc2ca38448276ee4b3c03a205511438f0ebcce0fa6db3468be1697630e9e6d96",
                        #"c15335c61b3aa861f8959251f17b6ba5f0a1d5f1d2bdd4c0d691b6bae6f3ceb3",
                        # "f44ceb73f96c7fa3016ea2b9c6b68a5b92a62572317849bc4d6d9a724b93c83d",
                       # "016da194f06fd04ebd72db371c8e2c4a3c4cb81cb6300154526fde47a84f4a4e",
