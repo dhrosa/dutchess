@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dutchess"
+version = "0.0.0"
+
+dependencies = [
+    "aiolimiter",
+    "loguru",
+    "numpy",
+    "pandas",
+    "python-box",
+    "requests",
+]
+
+[project.scripts]
+dutchess = "dutchess.dutchess:main"

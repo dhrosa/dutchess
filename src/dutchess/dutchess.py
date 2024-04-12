@@ -1,4 +1,4 @@
-import dutchie
+from . import dutchie
 import asyncio
 
 from pandas import DataFrame, Series
@@ -26,7 +26,7 @@ def product_info_df(ps):
                 name=p.Name,
                 url_name=p.cName,
             )
-            
+
     return DataFrame.from_records(records())
 
 def terpene_info(ps, terpene_keep_count=5):
@@ -51,7 +51,7 @@ def terpene_info(ps, terpene_keep_count=5):
     )
     # Filter out elements where all terpene data is zero or null; likely sketchy data
     df = df[df.sum(axis=1) > 0]
-    
+
     # Find the most commonly documented terpenes (terpenes with most non-null values), while forcing Linalool to always be present.
     terpene_counts = df.notna().sum()
     terpene_counts.loc['Linalool'] = np.inf
@@ -69,10 +69,10 @@ def combined_df(ds, ps):
         .merge(d_df, on='d_id')
         .merge(linalool_df, on='p_id')
     )
-    
+
     def url_guess(row):
         return f'https://dutchie.com/dispensary/{row.d_url_name}/product/{row.url_name}'
-    
+
     df = (
         df
         .assign(url_guess=df.apply(url_guess, axis=1))
@@ -83,12 +83,12 @@ def combined_df(ds, ps):
         ))
     )
     return df.sort_values('linalool')[['dispensary', 'dispensary_url', 'brand', 'name', 'url_guess', 'linalool']]
-    
+
 async def amain():
     ds, ps = await dutchie.load(25)
     df = combined_df(ds, ps)
     df.to_csv('linalool.csv')
-    
+
 def main():
     asyncio.run(amain())
 
