@@ -60,7 +60,7 @@ async def dispensary_query(session, distance):
 
     data = await query(session,
                        "ConsumerDispensaries",
-                       "68345d0914f802d97cf8ecda803ee9fece734723318fb0a731c70866ba842d6a",
+                       "10f05353272bab0f3ceeff818feef0a05745241316be3a5eb9f3e66ca927a40d",
                        variables)
     return [Box(d) for d in data['filteredDispensaries']]
 
@@ -82,7 +82,7 @@ async def menu_query(session, dispensary_id):
 
     data = await query(session,
                        "IndividualFilteredProduct",
-                       "093f88f51564d5361b8116f600748d47d9f9d91b675a745fbcef9b7c03d41230",
+                       "63df54bf308c5176e422805961f73ebdda75ae3a60f9885831be146b4a7cb32e",
                        variables)
 
     return [Box(p) for p in data['filteredProducts']['products']]

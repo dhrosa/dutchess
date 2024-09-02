@@ -4,6 +4,7 @@ import asyncio
 from pandas import DataFrame, Series
 import pandas as pd
 import numpy as np
+import click
 
 def dispensary_df(ds):
     def records():
@@ -84,13 +85,15 @@ def combined_df(ds, ps):
     )
     return df.sort_values('linalool')[['dispensary', 'dispensary_url', 'brand', 'name', 'url_guess', 'linalool']]
 
-async def amain():
-    ds, ps = await dutchie.load(25)
+async def amain(distance):
+    ds, ps = await dutchie.load(distance)
     df = combined_df(ds, ps)
     df.to_csv('linalool.csv')
 
-def main():
-    asyncio.run(amain())
+@click.command
+@click.option("--distance", "-d", default=25, help="Max radius from target to search within.")
+def main(distance):
+    asyncio.run(amain(distance))
 
 if __name__ == '__main__':
     main()
